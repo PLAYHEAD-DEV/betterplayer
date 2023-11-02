@@ -70,6 +70,7 @@ android {
         implementation "androidx.media3:media3-exoplayer-smoothstreaming:1.1.1"
         implementation "androidx.media3:media3-exoplayer:1.1.1"
         implementation "androidx.legacy:legacy-support-v4:1.0.0"
+        implementation "androidx.media3:media3-datasource-cronet:1.1.1"
 
 
     }
