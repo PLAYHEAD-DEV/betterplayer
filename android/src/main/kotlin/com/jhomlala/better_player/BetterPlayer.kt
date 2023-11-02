@@ -56,7 +56,10 @@ import androidx.media3.ui.PlayerNotificationManager.MediaDescriptionAdapter
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.cronet.CronetDataSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
+import com.google.android.gms.net.CronetProviderInstaller
 import com.jhomlala.better_player.DataSourceUtils.getDataSourceFactory
 import com.jhomlala.better_player.DataSourceUtils.getUserAgent
 import com.jhomlala.better_player.DataSourceUtils.isHTTP
@@ -64,8 +67,10 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.view.TextureRegistry.SurfaceTextureEntry
+import org.chromium.net.CronetEngine
 import java.io.File
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.math.max
 import kotlin.math.min
 
@@ -108,6 +113,15 @@ internal class BetterPlayer(
         exoPlayer = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
             .setLoadControl(loadControl)
+            .setMediaSourceFactory(
+                DefaultMediaSourceFactory(context)
+                    .setDataSourceFactory(
+                        CronetDataSource.Factory(
+                            CronetEngine.Builder(context).build(),
+                            Executors.newSingleThreadExecutor()
+                        )
+                    )
+            )
             .build()
         workManager = WorkManager.getInstance(context)
         workerObserverMap = HashMap()
